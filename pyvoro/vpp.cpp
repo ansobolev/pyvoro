@@ -90,6 +90,11 @@ double cell_get_volume(void* cell_) {
   return cell->volume();
 }
 
+double cell_get_surface_area(void* cell_) {
+  voronoicell_neighbor* cell = (voronoicell_neighbor*)cell_;
+  return cell->surface_area();
+}
+
 /* input: (x_, y_, z_) the position of the original input point.
  * returns:
  * vector of doubles, coord j of vertex i at ret[i*3 + j]
@@ -154,6 +159,13 @@ void** cell_get_faces(void* cell_) {
   return faces;
 }
 
+vector<double> cell_get_face_areas(void* cell_) {
+  voronoicell_neighbor* cell = (voronoicell_neighbor*)cell_;
+  vector<double> areas;
+
+  cell->face_areas(areas);
+  return areas;
+}
 
 void dispose_all(void* container_poly_, void** vorocells, int n_) {
   delete (container_poly*)container_poly_;

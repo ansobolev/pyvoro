@@ -30,6 +30,7 @@ void** compute_voronoi_tesselation(void* container_poly_, int n_);
 
 /* access methods for retrieving voronoi cell instance data. */
 double cell_get_volume(void* cell_);
+double cell_get_surface_area(void* cell_);
 
 /* input: (x_, y_, z_) the position of the original input point.
  * returns:
@@ -45,6 +46,10 @@ void** cell_get_vertex_adjacency(void* cell_);
  * [2 0 5 7 3 249] for loop 2,0,5,7,3 leading to cell 249.
  */
 void** cell_get_faces(void* cell_);
+
+/* A vector of areas of corresponding faces of the cell
+ */
+std::vector<double> cell_get_face_areas(void* cell_);
 
 void dispose_all(void* container_poly_, void** vorocells, int n_);
 
