@@ -1,4 +1,5 @@
-include pyvoro/voroplusplus.pyx
-include pyvoro/vpp.h
-include src/*.cc
-include src/*.hh
+include LICENSE.txt
+include original-README
+include README.md
+recursive-include src *.cc *.hh
+recursive-include pyvoro *.py *.cpp *.h
