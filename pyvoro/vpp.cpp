@@ -38,11 +38,12 @@ void put_particles(void* container_poly_, int n_, double* x_, double* y_, double
   }
 }
 
-void** compute_voronoi_tesselation(void* container_poly_, int n_) {
+void** compute_voronoi_tesselation(void* container_poly_, int n_, bool del_small_, double thres_) {
   container_poly* con = (container_poly*)container_poly_;
   int found = 0;
-  int i;
+  int i, num_faces = 0;
   double x, y, z, r;
+  double area = 0.0;
   c_loop_all* cla = new c_loop_all(*(con));
   voronoicell_neighbor cell;
   voronoicell_neighbor* cellptr = NULL;
@@ -62,7 +63,11 @@ void** compute_voronoi_tesselation(void* container_poly_, int n_) {
     *(cellptr) = cell;
     vorocells[i] = (void*)cellptr;
     found++;
-    
+    // if we are deleting small faces we need to know what face is small
+    if (del_small_) {
+      num_faces++;
+      area += cell.surface_area();
+    }
   } while (cla->inc());
   
   delete cla;
@@ -93,6 +98,15 @@ double cell_get_volume(void* cell_) {
 double cell_get_surface_area(void* cell_) {
   voronoicell_neighbor* cell = (voronoicell_neighbor*)cell_;
   return cell->surface_area();
+}
+
+vector<double> cell_get_face_normals(void* cell_) {
+  voronoicell_neighbor* cell = (voronoicell_neighbor*)cell_;
+  vector<double> face_normals;
+
+  cell->normals(face_normals);
+
+  return face_normals;
 }
 
 /* input: (x_, y_, z_) the position of the original input point.

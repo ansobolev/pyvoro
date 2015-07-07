@@ -25,6 +25,7 @@ cdef extern from "vpp.h":
   double cell_get_surface_area(void* cell_)
   vector[double] cell_get_vertex_positions(void* cell_, double x_, double y_, double z_)
   vector[double] cell_get_face_areas(void* cell_)
+  vector[double] cell_get_face_normals(void* cell_)
   void** cell_get_vertex_adjacency(void* cell_)
   void** cell_get_faces(void* cell_)
   void dispose_all(void* container_poly_, void** vorocells, int n_)
@@ -34,6 +35,9 @@ cdef extern from "stdlib.h":
   ctypedef unsigned long size_t
   void free(void *ptr)
   void* malloc(size_t size)
+
+cdef extern from "math.h":
+  double sqrt(double x)
 
 import sys
 import math
@@ -92,9 +96,13 @@ Output format is a list of cells as follows:
   outputs. It must have a constructor which accepts a list of 3 python floats
   (python's list type does satisfy this requirement.)
   """
-  cdef int n = len(points), i, j
-  cdef double *xs, *ys, *zs, *rs
-  cdef void** voronoi_cells
+  cdef:
+    int n = len(points), i, j
+    double *xs
+    double *ys
+    double *zs
+    double *rs
+    void** voronoi_cells
   
   vector_class = get_constructor(points[0])
 
@@ -185,6 +193,17 @@ Output format is a list of cells as follows:
     
     lists = cell_get_faces(voronoi_cells[i])
     face_areas = cell_get_face_areas(voronoi_cells[i])
+    normal_vectors = cell_get_face_normals(voronoi_cells[i])
+    face_normals = []
+    distances = []
+    for k from 0 <= k < normal_vectors.size() / 3:
+      face_normals.append([normal_vectors[3 * k],
+                           normal_vectors[3 * k + 1],
+                           normal_vectors[3 * k + 2]])
+      distances.append(sqrt(normal_vectors[3*k] * normal_vectors[3*k]+
+                       normal_vectors[3*k + 1] * normal_vectors[3*k + 1]+
+                       normal_vectors[3*k + 2] * normal_vectors[3*k + 2]))
+
     faces = []
     j = 0
     while lists[j] != NULL:
@@ -195,7 +214,9 @@ Output format is a list of cells as follows:
       faces.append({
         'adjacent_cell' : int(deref(vptr)[vptr.size() - 1]),
         'area' : face_areas[j],
-        'vertices' : face_vertices
+        'vertices' : face_vertices,
+        'normal' : face_normals[j],
+        'distance' : distances[j]
       })
       del vptr
       j += 1
