@@ -1660,7 +1660,7 @@ void voronoicell_base::normals(std::vector<double> &v) {
 inline void voronoicell_base::normals_search(std::vector<double> &v,int i,int j,int k) {
 	ed[i][j]=-1-k;
 	int l=cycle_up(ed[i][nu[i]+j],k),m;
-	double ux,uy,uz,vx,vy,vz,wx,wy,wz,wmag;
+	double ux,uy,uz,vx,vy,vz,wx,wy,wz,wmag,d_pl,lambda;
 	do {
 		m=ed[k][l];ed[k][l]=-1-m;
 		ux=pts[3*m]-pts[3*k];
@@ -1688,11 +1688,15 @@ inline void voronoicell_base::normals_search(std::vector<double> &v,int i,int j,
 				if(wmag>tolerance_sq) {
 
 					// Construct the normal vector and print it
+					d_pl = - wx*pts[3*m] - wy*pts[3*m+1] - wz*pts[3*m+2];
+                    lambda = -d_pl / (wx*wx + wy*wy + wz*wz);
+					v.push_back(wx*lambda);
+					v.push_back(wy*lambda);
+					v.push_back(wz*lambda);
 					// wmag=1/sqrt(wmag);
-					wmag=1;
-					v.push_back(wx*wmag);
-					v.push_back(wy*wmag);
-					v.push_back(wz*wmag);
+					// v.push_back(wx*wmag);
+					// v.push_back(wy*wmag);
+					// v.push_back(wz*wmag);
 
 					// Mark all of the remaining edges of this
 					// face and exit
