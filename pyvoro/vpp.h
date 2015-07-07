@@ -31,6 +31,7 @@ void** compute_voronoi_tesselation(void* container_poly_, int n_);
 /* access methods for retrieving voronoi cell instance data. */
 double cell_get_volume(void* cell_);
 double cell_get_surface_area(void* cell_);
+std::vector<double> cell_get_face_normals(void* cell_);
 
 /* input: (x_, y_, z_) the position of the original input point.
  * returns:

@@ -167,6 +167,15 @@ vector<double> cell_get_face_areas(void* cell_) {
   return areas;
 }
 
+vector<double> cell_get_face_normals(void* cell_) {
+  voronoicell_neighbor* cell = (voronoicell_neighbor*)cell_;
+  vector<double> face_normals;
+
+  cell->normals(face_normals);
+
+  return face_normals;
+}
+
 void dispose_all(void* container_poly_, void** vorocells, int n_) {
   delete (container_poly*)container_poly_;
   

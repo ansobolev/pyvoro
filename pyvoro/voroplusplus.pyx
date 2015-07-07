@@ -25,6 +25,7 @@ cdef extern from "vpp.h":
   double cell_get_surface_area(void* cell_)
   vector[double] cell_get_vertex_positions(void* cell_, double x_, double y_, double z_)
   vector[double] cell_get_face_areas(void* cell_)
+  vector[double] cell_get_face_normals(void* cell_)
   void** cell_get_vertex_adjacency(void* cell_)
   void** cell_get_faces(void* cell_)
   void dispose_all(void* container_poly_, void** vorocells, int n_)
@@ -92,9 +93,13 @@ Output format is a list of cells as follows:
   outputs. It must have a constructor which accepts a list of 3 python floats
   (python's list type does satisfy this requirement.)
   """
-  cdef int n = len(points), i, j
-  cdef double *xs, *ys, *zs, *rs
-  cdef void** voronoi_cells
+  cdef:
+    int n = len(points), i, j
+    double *xs
+    double *ys
+    double *zs
+    double *rs
+    void** voronoi_cells
   
   vector_class = get_constructor(points[0])
 
