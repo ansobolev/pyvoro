@@ -200,7 +200,7 @@ Output format is a list of cells as follows:
       face_normals.append([normal_vectors[3 * k],
                            normal_vectors[3 * k + 1],
                            normal_vectors[3 * k + 2]])
-      distances.append(sqrt(normal_vectors[3*k] * normal_vectors[3*k]+
+      distances.append(2.*sqrt(normal_vectors[3*k] * normal_vectors[3*k]+
                        normal_vectors[3*k + 1] * normal_vectors[3*k + 1]+
                        normal_vectors[3*k + 2] * normal_vectors[3*k + 2]))
 

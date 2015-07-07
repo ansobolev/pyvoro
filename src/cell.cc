@@ -1688,7 +1688,8 @@ inline void voronoicell_base::normals_search(std::vector<double> &v,int i,int j,
 				if(wmag>tolerance_sq) {
 
 					// Construct the normal vector and print it
-					wmag=1/sqrt(wmag);
+					// wmag=1/sqrt(wmag);
+					wmag=1;
 					v.push_back(wx*wmag);
 					v.push_back(wy*wmag);
 					v.push_back(wz*wmag);
