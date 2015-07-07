@@ -36,6 +36,9 @@ cdef extern from "stdlib.h":
   void free(void *ptr)
   void* malloc(size_t size)
 
+cdef extern from "math.h":
+  double sqrt(double x)
+
 import sys
 import math
 
@@ -190,6 +193,18 @@ Output format is a list of cells as follows:
     
     lists = cell_get_faces(voronoi_cells[i])
     face_areas = cell_get_face_areas(voronoi_cells[i])
+    normal_vectors = cell_get_face_normals(voronoi_cells[i])
+    face_normals = []
+    distances = []
+    for k from 0 <= k < normal_vectors.size() / 3:
+      face_normals.append([normal_vectors[3 * k],
+                           normal_vectors[3 * k + 1],
+                           normal_vectors[3 * k + 2]])
+      distances.append(sqrt(normal_vectors[3*k] * normal_vectors[3*k]+
+                       normal_vectors[3*k + 1] * normal_vectors[3*k + 1]+
+                       normal_vectors[3*k + 2] * normal_vectors[3*k + 2]))
+
+
     faces = []
     j = 0
     while lists[j] != NULL:
@@ -200,7 +215,9 @@ Output format is a list of cells as follows:
       faces.append({
         'adjacent_cell' : int(deref(vptr)[vptr.size() - 1]),
         'area' : face_areas[j],
-        'vertices' : face_vertices
+        'vertices' : face_vertices,
+        'normal' : face_normals[j],
+        'distance': distances[j]
       })
       del vptr
       j += 1
